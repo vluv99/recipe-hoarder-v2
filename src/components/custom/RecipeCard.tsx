@@ -1,0 +1,41 @@
+import {Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import type {Recipe} from "@/model/Recipe.ts";
+import {Heart} from "lucide-react";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
+
+type Props = {
+    recipe: Recipe
+};
+
+export function RecipeCard({recipe}: Props) {
+    return (
+        <Card size='sm' className='grid auto-rows-max]'>
+            {/*<div className="absolute inset-0 z-30 aspect-video bg-black/35" />*/}
+            <img
+                src={recipe.picture ?? ''}
+                alt=''
+                className="aspect-video w-full object-cover"
+            />
+            <CardHeader>
+                <CardTitle>{recipe.title}</CardTitle>
+                <CardDescription>{recipe.description}</CardDescription>
+                <CardAction>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost"><Heart/></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            Save this for me!
+                        </TooltipContent>
+                    </Tooltip>
+                </CardAction>
+            </CardHeader>
+            <CardFooter>
+                <CardAction>
+                    <Button>View</Button>
+                </CardAction>
+            </CardFooter>
+        </Card>
+    );
+}
