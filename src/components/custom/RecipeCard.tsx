@@ -10,7 +10,7 @@ type Props = {
 
 export function RecipeCard({recipe}: Props) {
     return (
-        <Card size='sm' className='grid auto-rows-max]'>
+        <Card size='sm' className='grid grid-rows-[auto_1fr_auto]'>
             {/*<div className="absolute inset-0 z-30 aspect-video bg-black/35" />*/}
             <img
                 src={recipe.picture ?? ''}
