@@ -9,7 +9,7 @@ import {
     SidebarProvider, SidebarTrigger
 } from "../components/ui/sidebar.tsx";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
-import {HomeIcon, NotebookTabs} from "lucide-react";
+import {BookHeart, HomeIcon} from "lucide-react";
 
 
 const RootLayout = () => (
@@ -33,9 +33,9 @@ const RootLayout = () => (
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
-                            <Link to="/about" className="[&.active]:font-bold">
-                                <NotebookTabs/>
-                                <span>About</span>
+                            <Link to="/cookbook" className="[&.active]:font-bold">
+                                <BookHeart/>
+                                <span>Cookbook</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

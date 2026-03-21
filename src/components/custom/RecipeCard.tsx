@@ -3,15 +3,23 @@ import {Button} from "@/components/ui/button.tsx";
 import type {Recipe} from "@/model/Recipe.ts";
 import {Heart} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
+import {getStoredRecipes, setStoredRecipe} from "@/mock/util.ts";
+import {useState} from "react";
 
 type Props = {
     recipe: Recipe
 };
 
 export function RecipeCard({recipe}: Props) {
+    const [isSaved, setIsSaved] = useState(Boolean(getStoredRecipes().find(r => r.id === recipe.id)));
+
+    const toggleRecipeSave = () => {
+        setStoredRecipe(recipe);
+        setIsSaved(!isSaved);
+    }
+
     return (
         <Card size='sm' className='grid grid-rows-[auto_1fr_auto]'>
-            {/*<div className="absolute inset-0 z-30 aspect-video bg-black/35" />*/}
             <img
                 src={recipe.picture ?? ''}
                 alt=''
@@ -23,10 +31,12 @@ export function RecipeCard({recipe}: Props) {
                 <CardAction>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost"><Heart/></Button>
+                            <Button variant="ghost" onClick={toggleRecipeSave}>
+                                {isSaved ? <Heart fill='red' color='red'/> : <Heart/>}
+                            </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                            Save this for me!
+                            {isSaved ? 'Remove from Cookbook' : 'Save this for me!'}
                         </TooltipContent>
                     </Tooltip>
                 </CardAction>
