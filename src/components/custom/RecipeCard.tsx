@@ -5,12 +5,14 @@ import {Heart} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
 import {getStoredRecipes, setStoredRecipe} from "@/mock/util.ts";
 import {useState} from "react";
+import {useNavigate} from "@tanstack/react-router";
 
 type Props = {
     recipe: Recipe
 };
 
 export function RecipeCard({recipe}: Props) {
+    const navigate = useNavigate();
     const [isSaved, setIsSaved] = useState(Boolean(getStoredRecipes().find(r => r.id === recipe.id)));
 
     const toggleRecipeSave = () => {
@@ -43,7 +45,7 @@ export function RecipeCard({recipe}: Props) {
             </CardHeader>
             <CardFooter>
                 <CardAction>
-                    <Button>View</Button>
+                    <Button onClick={() => navigate({to: '/recipe/$recipeId', params: {recipeId: recipe.id}})}>View</Button>
                 </CardAction>
             </CardFooter>
         </Card>
