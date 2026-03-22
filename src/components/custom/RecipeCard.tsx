@@ -28,8 +28,8 @@ export function RecipeCard({recipe}: Props) {
                 className="aspect-video w-full object-cover"
             />
             <CardHeader>
-                <CardTitle>{recipe.title}</CardTitle>
-                <CardDescription>{recipe.description}</CardDescription>
+                <CardTitle className='line-clamp-2'>{recipe.title}</CardTitle>
+                <CardDescription className='line-clamp-3'>{recipe.description}</CardDescription>
                 <CardAction>
                     <Tooltip>
                         <TooltipTrigger asChild>
