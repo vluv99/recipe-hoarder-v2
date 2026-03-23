@@ -1,7 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useState} from "react";
 import {getStoredRecipes} from "@/mock/util.ts";
-import {EmptyCookbook} from "@/routes/_cookbook/components/EmptyCookbook.tsx";
+import {EmptyCookbook} from "@/routes/_cookbook/components/-EmptyCookbook.tsx";
 import {RecipesCardLayout} from "@/components/custom/RecipesCardLayout.tsx";
 
 export const Route = createFileRoute('/_cookbook/cookbook')({
