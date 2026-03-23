@@ -1,13 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import {mockRecipes} from "@/mock/mockRecipes.ts";
+import {RecipesCardLayout} from "@/components/custom/RecipesCardLayout.tsx";
 
 export const Route = createFileRoute('/')({
-    component: Index,
+    component: Home,
 })
 
-function Index() {
-    return (
-        <div className="p-2">
-            <h3>Welcome Home!</h3>
-        </div>
-    )
+function Home() {
+    const recipes = mockRecipes;
+
+    return <RecipesCardLayout title='Look for new recipes!' recipes={recipes}/>;
 }
