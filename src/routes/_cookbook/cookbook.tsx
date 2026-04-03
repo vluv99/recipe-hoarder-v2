@@ -1,16 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { getStoredRecipes } from "@/mock/util.ts";
 import { EmptyCookbook } from "@/routes/_cookbook/-components/EmptyCookbook.tsx";
 import { RecipesCardLayout } from "@/components/custom/RecipesCardLayout.tsx";
+import { useCookbook } from "@/hooks/useCookbook.ts";
 
 export const Route = createFileRoute("/_cookbook/cookbook")({
   component: Cookbook,
 });
 
 function Cookbook() {
-  const [recipes] = useState(getStoredRecipes());
+  const { data, isFetching } = useCookbook();
 
-  if (recipes.length === 0) return <EmptyCookbook />;
-  return <RecipesCardLayout title="Recipes in my Cookbook" recipes={recipes} />;
+  if (data?.length === 0) return <EmptyCookbook />;
+  return (
+    <RecipesCardLayout
+      title="Recipes in my Cookbook"
+      recipes={data ?? []}
+      isLoading={isFetching}
+    />
+  );
 }
