@@ -15,7 +15,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { useNavigate } from "@tanstack/react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAccount, useToggleRecipeInAccount } from "@/hooks/useAccount.ts";
+import { DemoAccountDialog } from "@/components/custom/DemoAccountDialog.tsx";
+import { useState } from "react";
 
 type Props = {
   recipe: Recipe;
@@ -24,78 +26,70 @@ type Props = {
 
 export function RecipeCard({ recipe, isLoading }: Props) {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const [showDemoDialog, setShowDemoDialog] = useState(false);
 
-  const isSaved = false; // todo: fix this once we have account data
+  const { data: account } = useAccount();
+  const toggleMutation = useToggleRecipeInAccount();
 
-  const mutation = useMutation({
-    mutationFn: () => {
-      return new Promise<void>((resolve) => {
-        const stored = localStorage.getItem("recipes");
-        let recipes: Recipe[] = stored ? JSON.parse(stored) : [];
-        const currentlySaved = recipes.some((r) => r.id === recipe.id);
-        if (currentlySaved) {
-          recipes = recipes.filter((r) => r.id !== recipe.id);
-        } else {
-          recipes = [...recipes, recipe];
-        }
-        localStorage.setItem("recipes", JSON.stringify(recipes));
-        resolve();
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipes"] });
-      queryClient.invalidateQueries({ queryKey: ["cookbook"] });
-    },
-  });
+  const isSaved = account?.hasRecipe(recipe.id) ?? false;
 
-  const toggleRecipeSave = () => {
-    mutation.mutate();
+  const handleSaveClick = () => {
+    if (!account) {
+      setShowDemoDialog(true);
+      return;
+    }
+    toggleMutation.mutate(recipe);
   };
 
   return (
-    <Card size="sm" className="grid grid-rows-[auto_1fr_auto]">
-      <img
-        src={recipe.picture ?? ""}
-        alt=""
-        className="aspect-video w-full object-cover"
+    <>
+      <Card size="sm" className="grid grid-rows-[auto_1fr_auto]">
+        <img
+          src={recipe.picture ?? ""}
+          alt=""
+          className="aspect-video w-full object-cover"
+        />
+        <CardHeader>
+          <CardTitle className="line-clamp-2">{recipe.title}</CardTitle>
+          <CardDescription className="line-clamp-3">
+            {recipe.description}
+          </CardDescription>
+          <CardAction>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  onClick={handleSaveClick}
+                  disabled={isLoading || toggleMutation.isPending}
+                >
+                  {isSaved ? <Heart fill="red" color="red" /> : <Heart />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {isSaved ? "Remove from Cookbook" : "Save this for me!"}
+              </TooltipContent>
+            </Tooltip>
+          </CardAction>
+        </CardHeader>
+        <CardFooter>
+          <CardAction>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: "/recipe/$recipeId",
+                  params: { recipeId: recipe.id },
+                })
+              }
+            >
+              View
+            </Button>
+          </CardAction>
+        </CardFooter>
+      </Card>
+      <DemoAccountDialog
+        open={showDemoDialog}
+        onClose={() => setShowDemoDialog(false)}
       />
-      <CardHeader>
-        <CardTitle className="line-clamp-2">{recipe.title}</CardTitle>
-        <CardDescription className="line-clamp-3">
-          {recipe.description}
-        </CardDescription>
-        <CardAction>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                onClick={toggleRecipeSave}
-                disabled={isLoading || mutation.isPending}
-              >
-                {isSaved ? <Heart fill="red" color="red" /> : <Heart />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {isSaved ? "Remove from Cookbook" : "Save this for me!"}
-            </TooltipContent>
-          </Tooltip>
-        </CardAction>
-      </CardHeader>
-      <CardFooter>
-        <CardAction>
-          <Button
-            onClick={() =>
-              navigate({
-                to: "/recipe/$recipeId",
-                params: { recipeId: recipe.id },
-              })
-            }
-          >
-            View
-          </Button>
-        </CardAction>
-      </CardFooter>
-    </Card>
+    </>
   );
 }
