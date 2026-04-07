@@ -10,11 +10,28 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar.tsx";
-import { Link } from "@tanstack/react-router";
-import { BookHeart, HomeIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { Link, type ToPathOption } from "@tanstack/react-router";
+import { BadgePlus, BookHeart, HomeIcon } from "lucide-react";
+import type { ReactElement, ReactNode } from "react";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
+  const createItem = (
+    navigateTo: ToPathOption,
+    label: string,
+    icon: ReactElement<SVGSVGElement>,
+  ) => {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild>
+          <Link to={navigateTo} className="[&.active]:font-bold">
+            {icon}
+            <span>{label}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
+
   return (
     <TooltipProvider>
       <SidebarProvider>
@@ -26,22 +43,9 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/" className="[&.active]:font-bold">
-                    <HomeIcon />
-                    <span>Home</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/cookbook" className="[&.active]:font-bold">
-                    <BookHeart />
-                    <span>Cookbook</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {createItem("/", "Home", <HomeIcon />)}
+              {createItem("/cookbook", "Cookbook", <BookHeart />)}
+              {createItem("/recipe/new", "Add New Recipe", <BadgePlus />)}
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter />

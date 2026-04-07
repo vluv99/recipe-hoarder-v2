@@ -7,6 +7,7 @@ export class Account {
   email: string;
   isDemo: boolean;
   savedRecipes: string[];
+  isMetric: boolean = true;
 
   constructor(data: {
     id: string;
